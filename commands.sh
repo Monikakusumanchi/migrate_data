@@ -29,3 +29,31 @@
 # GO
 # SELECT * FROM Inventory WHERE quantity > 152;
 # GO
+# sudo docker exec -it postgres /bin/bash
+# psql -U admin -d testdb
+# CREATE TABLE employees (
+#     id SERIAL PRIMARY KEY,
+#     first_name VARCHAR(50),
+#     last_name VARCHAR(50),
+#     email VARCHAR(100),
+#     department VARCHAR(50),
+#     salary NUMERIC(10, 2)
+# );
+# INSERT INTO employees (first_name, last_name, email, department, salary)
+# VALUES ('John', 'Doe', 'john.doe@example.com', 'Engineering', 75000.00);
+
+# INSERT INTO employees (first_name, last_name, email, department, salary)
+# VALUES ('Jane', 'Smith', 'jane.smith@example.com', 'HR', 65000.00);
+
+# INSERT INTO employees (first_name, last_name, email, department, salary)
+# VALUES ('Alice', 'Johnson', 'alice.johnson@example.com', 'Marketing', 70000.00);
+
+# INSERT INTO employees (first_name, last_name, email, department, salary)
+# VALUES 
+#     ('Bob', 'Williams', 'bob.williams@example.com', 'Engineering', 72000.00),
+#     ('Eve', 'Davis', 'eve.davis@example.com', 'Finance', 68000.00),
+#     ('Charlie', 'Brown', 'charlie.brown@example.com', 'IT', 80000.00);
+
+# sudo docker exec -it postgres psql -U admin -d testdb -c "SELECT * FROM employees;"
+# sudo docker exec -it postgres pg_dump -U admin -d testdb -f /tmp/testdb_dump.sql
+# sudo docker cp postgres:/tmp/testdb_dump.sql ./postgres_data/testdb_dump.sql
