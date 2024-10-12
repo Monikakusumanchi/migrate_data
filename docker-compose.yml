@@ -12,6 +12,8 @@ services:
       - mynetwork
     volumes:
       - ./msql_data:/var/opt/mssql
+    expose:
+      - "1433"
 
 
   postgres:
