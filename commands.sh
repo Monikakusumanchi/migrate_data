@@ -57,3 +57,14 @@
 # sudo docker exec -it postgres psql -U admin -d testdb -c "SELECT * FROM employees;"
 # sudo docker exec -it postgres pg_dump -U admin -d testdb -f /tmp/testdb_dump.sql
 # sudo docker cp postgres:/tmp/testdb_dump.sql ./postgres_data/testdb_dump.sql
+# sudo docker exec -it mssql /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'Monika@1407!' -Q "SELECT @@VERSION"
+pip install pyodbc
+sudo apt-get update
+sudo apt-get install -y unixodbc-dev
+# Add the Microsoft package repository
+curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+sudo apt-get update
+
+# Install the ODBC Driver for SQL Server
+sudo ACCEPT_EULA=Y apt-get install -y msodbcsql17
