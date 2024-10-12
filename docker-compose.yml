@@ -1,0 +1,15 @@
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    container_name: mssql
+    restart: always
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Monika@1407!
+    ports:
+      - 1433:1433
+    volumes:
+      - sql1data:/var/opt/mssql
+  volumes:
+    sql1data:
+
