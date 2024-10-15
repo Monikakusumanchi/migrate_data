@@ -1,67 +1,95 @@
+
 # import connectorx as cx
 
-# # Define the connection string
-# connection_string = "mssql://SA:Monika@1407!@mssql:1433/testdb"
+# from sqlalchemy import create_engine
 
-# # SQL query to execute
-# query = "SELECT @@VERSION AS version"
+# connection_string = 'postgresql://admin:admin123@localhost:5432/testdb'
+# # query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"
+# query = "SELECT * FROM employees"
 
-# # Use ConnectorX to read SQL
-# try:
-#     df = cx.read_sql(query, connection_string)
-#     print(df)
-# except Exception as e:
-#     print(f"An error occurred: {e}")
-# import connectorx as cx
+# print(connection_string)
+# tablenames = cx.read_sql(connection_string, query)
+# print(tablenames)
 
-# # Define the connection strings for services running in Docker Compose
-# mssql_conn = "mssql://SA:Monika@1407!@mssql:1433"
-# postgres_conn = "postgres://admin:admin123@postgres:5432/testdb"
 
-# # Define the query to extract data from SQL Server
-# query = "SELECT * FROM WideWorldImporters.Warehouse.StockItems"
+# db_url = 'mssql://SA:Monika@1407!@localhost:1433/testdb'
+# query = "SELECT * FROM Inventory"
 
-# # Perform data transfer using ConnectorX
-# cx.read_sql( postgres_conn, query )
-import connectorx as cx
+# df = cx.read_sql(db_url, query)
 
+# print(df)
+
+# mssql_uri = "postgresql://admin:admin123@localhost:5432/testdb"
+
+# engine = create_engine(connection_string)
+
+# df.to_sql('your_table', con=engine, if_exists='append', index=False)
+
+# print("Data has been successfully inserted into the table!")
+# ==================================
+import pyodbc
 from sqlalchemy import create_engine
+import pandas as pd
 
-# Define the connection string
-connection_string = 'postgresql://admin:admin123@localhost:5432/testdb'
-# query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"
-query = "SELECT * FROM employees"
+# Connection string parameters
+server = 'localhost'         # e.g., 'localhost'
+port = '5432'                # PostgreSQL default port
+database = 'testdb'   # e.g., 'testdb'
+username = 'admin'   # PostgreSQL username
+password = 'admin123'   # PostgreSQL password
 
-print(connection_string)
-tablenames = cx.read_sql(connection_string, query)
-print(tablenames)
+# Create an SQLAlchemy engine for PostgreSQL
+engine = create_engine(f'postgresql+psycopg2://{username}:{password}@{server}:{port}/{database}')
 
+# Define your query
+query = "SELECT * FROM your_table;"
 
-# # Replace with your PostgreSQL connection string
-db_url = 'mssql://SA:Monika@1407!@localhost:1433/testdb'
-query = "SELECT * FROM Inventory"
+# Use pandas to read from PostgreSQL using SQLAlchemy
+df = pd.read_sql(query, engine)
+data = {
+    'id': [1, 2, 3],
+    'name': ['Alice', 'Bob', 'Charlie'],
+    'age': [25, 30, 35]
+}
+df = pd.DataFrame(data)
+df['id'] = df['id'].astype(int)
+df['name'] = df['name'].astype(str)
+df['age'] = df['age'].astype(int)
+connection_string = (
+    "DRIVER={PostgreSQL ANSI};"
+    f"Server={server};"
+    f"Port={port};"
+    f"Database={database};"
+    f"Uid={username};"
+    f"Pwd={password};"
+    f"sslmode=prefer;"
+)
+conn = pyodbc.connect(connection_string)
+cursor = conn.cursor()
 
-# Load data into a pandas DataFrame
-df = cx.read_sql(db_url, query)
+# Create table if it doesn't exist
+create_table_sql = """
+CREATE TABLE IF NOT EXISTS my_table (
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    age INT
+);
+"""
+cursor.execute(create_table_sql)
+conn.commit()  # Commit the transaction
 
-# Print the DataFrame
-print(df)
-# sql_server_url = "mssql+pyodbc://SA:Monika@1407!@localhost:1433/testdb?driver=ODBC+Driver+17+for+SQL+Server"
+# data_to_insert = [tuple(row) for row in df.itertuples(index=False)]
 
-# # Create a SQLAlchemy engine
-# engine = create_engine(sql_server_url)
+# # Insert data using executemany
+# sql = "INSERT INTO my_table (id, name, age) VALUES (?, ?, ?)"
+# cursor.executemany(sql, data_to_insert)
 
-# # Insert the DataFrame into SQL Server (replace 'your_table' with the target table name)
-# df.to_sql('Emp', con=engine, if_exists='append', index=False)
+# # Commit the insert transactions
+# conn.commit()
 
-# print("Data migration to SQL Server is complete!")
-# Source PostgreSQL URI
-mssql_uri = "postgresql://admin:admin123@localhost:5432/testdb"
-
-# Create SQLAlchemy engine
-engine = create_engine(connection_string)
-
-# Send the dataframe to PostgreSQL table (replace 'your_table' with the target table name)
-df.to_sql('your_table', con=engine, if_exists='append', index=False)
-
-print("Data has been successfully inserted into the table!")
+# # Close the cursor and connection
+# cursor.close()
+# conn.close()
+test_insert_sql = "INSERT INTO my_table (id, name, age) VALUES (4, 'Test', 40)"
+cursor.execute(test_insert_sql)
+conn.commit()

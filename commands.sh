@@ -68,3 +68,7 @@ sudo apt-get update
 
 # Install the ODBC Driver for SQL Server
 sudo ACCEPT_EULA=Y apt-get install -y msodbcsql17
+# ================================
+sudo apt-get install -y odbc-postgresql                ===========odbc installation
+odbcinst -j                                            ===============Check for installation
+pip install SQLAlchemy psycopg2                        ==================Install required libraries
